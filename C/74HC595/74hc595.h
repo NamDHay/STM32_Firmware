@@ -9,7 +9,6 @@
 #define INC_74HC595_H_
 
 #include "main.h"
-#ifdef CONFIG_USE_74HC595
 #include "string.h"
 #include "stdbool.h"
 
@@ -51,4 +50,3 @@ typedef enum{
 void HC595_AssignPin(HC595PIN *hc595, GPIO_TypeDef *port, uint16_t pin, pinName name);
 void HC595_ShiftOut()
 #endif /* INC_74HC595_H_ */
-#endif

@@ -25,4 +25,5 @@ void HC595_AssignPin(HC595PIN *hc595, GPIO_TypeDef *port, uint16_t pin, pinName 
         oepin = pin;
         break;
     }
+    
 }
