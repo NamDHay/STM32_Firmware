@@ -36,10 +36,12 @@ private:
 	    pinConfig clk;
 	    pinConfig latch;
 	    pinConfig oe;
-	uint32_t data;
-}HC595;
+		uint32_t data;
+	}HC595pin;
+	HC595pin hc595pin;
 public:
-    void HC595_AssignPin(GPIO_TypeDef *port, uint16_t pin, pinName name);
+    void AssignPin(GPIO_TypeDef *port, uint16_t pin, pinName name);
+	void ShiftOut();
 }
 
 
