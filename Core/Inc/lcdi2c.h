@@ -11,6 +11,10 @@
 #include "main.h"
 #include "string.h"
 
+#define LCD_EN 							0x04  // Enable bit
+#define LCD_RW 							0x02  // Read/Write bit
+#define LCD_RS 							0x01  // Register select bit
+
 #define LCD_CLEARDISPLAY 				0x01
 #define LCD_RETURNHOME 					0x02
 
@@ -45,6 +49,9 @@
 #define LCD_1LINE 						0x00
 #define LCD_5x10DOTS 					0x04
 #define LCD_5x8DOTS 					0x00
+
+#define LCD_BACKLIGHT 					0x08
+#define LCD_NOBACKLIGHT 				0x00
 
 #define LCD_Delay(time)	HAL_Delay(time)
 
