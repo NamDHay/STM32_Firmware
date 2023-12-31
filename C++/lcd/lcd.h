@@ -24,7 +24,7 @@
 #define LCD_CLEARDISPLAY 				0x01
 #define LCD_RETURNHOME 					0x02
 
-#define LCD_ENTRYMODESET 				0x04
+#define LCD_ENTRYMODESET 				0x04	
 #define LCD_DISPLAYCONTROL 				0x08
 #define LCD_CURSORSHIFT 				0x10
 #define LCD_FUNCTIONSET 				0x20
