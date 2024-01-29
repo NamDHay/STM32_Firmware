@@ -1,0 +1,3 @@
+../Core/Src/ssd1306.c:10:6:SSD1306_AssignedPin	24	static
+../Core/Src/ssd1306.c:37:6:SSD1306_Write	24	static
+../Core/Src/ssd1306.c:54:6:SSD1306_Init	16	static
