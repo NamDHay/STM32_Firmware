@@ -136,22 +136,69 @@ Discarded input sections
  .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
  .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
  .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
+ .group         0x0000000000000000        0xc ./Core/Src/ssd1306.o
  .text          0x0000000000000000        0x0 ./Core/Src/ssd1306.o
  .data          0x0000000000000000        0x0 ./Core/Src/ssd1306.o
  .bss           0x0000000000000000        0x0 ./Core/Src/ssd1306.o
+ .bss.SSD1306_Buffer
+                0x0000000000000000      0x400 ./Core/Src/ssd1306.o
  .text.SSD1306_AssignedPin
-                0x0000000000000000       0x88 ./Core/Src/ssd1306.o
+                0x0000000000000000       0x84 ./Core/Src/ssd1306.o
  .text.SSD1306_Write
-                0x0000000000000000       0xae ./Core/Src/ssd1306.o
+                0x0000000000000000       0xa8 ./Core/Src/ssd1306.o
  .text.SSD1306_Init
-                0x0000000000000000       0x1c ./Core/Src/ssd1306.o
- .debug_info    0x0000000000000000      0x85a ./Core/Src/ssd1306.o
- .debug_abbrev  0x0000000000000000      0x19f ./Core/Src/ssd1306.o
- .debug_aranges
+                0x0000000000000000      0x120 ./Core/Src/ssd1306.o
+ .text.SSD1306_ScrollRight
+                0x0000000000000000       0x6c ./Core/Src/ssd1306.o
+ .text.SSD1306_ScrollLeft
+                0x0000000000000000       0x6c ./Core/Src/ssd1306.o
+ .text.SSD1306_Scrolldiagright
+                0x0000000000000000       0x80 ./Core/Src/ssd1306.o
+ .text.SSD1306_Scrolldiagleft
+                0x0000000000000000       0x80 ./Core/Src/ssd1306.o
+ .text.SSD1306_Stopscroll
+                0x0000000000000000       0x12 ./Core/Src/ssd1306.o
+ .text.SSD1306_InvertDisplay
+                0x0000000000000000       0x2e ./Core/Src/ssd1306.o
+ .text.SSD1306_DrawBitmap
+                0x0000000000000000       0xd0 ./Core/Src/ssd1306.o
+ .text.SSD1306_UpdateScreen
+                0x0000000000000000       0x5c ./Core/Src/ssd1306.o
+ .text.SSD1306_ToggleInvert
+                0x0000000000000000       0x58 ./Core/Src/ssd1306.o
+ .text.SSD1306_Fill
                 0x0000000000000000       0x30 ./Core/Src/ssd1306.o
+ .text.SSD1306_DrawPixel
+                0x0000000000000000       0xc0 ./Core/Src/ssd1306.o
+ .debug_info    0x0000000000000000      0xb13 ./Core/Src/ssd1306.o
+ .debug_abbrev  0x0000000000000000      0x246 ./Core/Src/ssd1306.o
+ .debug_aranges
+                0x0000000000000000       0x88 ./Core/Src/ssd1306.o
  .debug_rnglists
-                0x0000000000000000       0x21 ./Core/Src/ssd1306.o
- .debug_macro   0x0000000000000000      0x1ad ./Core/Src/ssd1306.o
+                0x0000000000000000       0x68 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000      0x2bd ./Core/Src/ssd1306.o
  .debug_macro   0x0000000000000000      0xa9c ./Core/Src/ssd1306.o
  .debug_macro   0x0000000000000000      0x215 ./Core/Src/ssd1306.o
  .debug_macro   0x0000000000000000       0x2e ./Core/Src/ssd1306.o
@@ -188,10 +235,33 @@ Discarded input sections
  .debug_macro   0x0000000000000000      0x217 ./Core/Src/ssd1306.o
  .debug_macro   0x0000000000000000       0x83 ./Core/Src/ssd1306.o
  .debug_macro   0x0000000000000000       0x16 ./Core/Src/ssd1306.o
- .debug_line    0x0000000000000000      0x688 ./Core/Src/ssd1306.o
- .debug_str     0x0000000000000000    0x7c5d6 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x61 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x24 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x43 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x34 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x16 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x35 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000      0x369 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x10 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x16 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x43 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x34 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x10 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x58 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x8e ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x1c ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000      0x177 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x16 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x16 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000      0x147 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x16 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x20 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x22 ./Core/Src/ssd1306.o
+ .debug_macro   0x0000000000000000       0x52 ./Core/Src/ssd1306.o
+ .debug_line    0x0000000000000000      0xa6a ./Core/Src/ssd1306.o
+ .debug_str     0x0000000000000000    0x800b0 ./Core/Src/ssd1306.o
  .comment       0x0000000000000000       0x44 ./Core/Src/ssd1306.o
- .debug_frame   0x0000000000000000       0x80 ./Core/Src/ssd1306.o
+ .debug_frame   0x0000000000000000      0x204 ./Core/Src/ssd1306.o
  .ARM.attributes
                 0x0000000000000000       0x2d ./Core/Src/ssd1306.o
  .group         0x0000000000000000        0xc ./Core/Src/stm32f1xx_hal_msp.o

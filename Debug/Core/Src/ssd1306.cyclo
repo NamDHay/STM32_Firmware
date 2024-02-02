@@ -1,3 +1,14 @@
-../Core/Src/ssd1306.c:10:6:SSD1306_AssignedPin	6
-../Core/Src/ssd1306.c:37:6:SSD1306_Write	2
-../Core/Src/ssd1306.c:54:6:SSD1306_Init	1
+../Core/Src/ssd1306.c:13:6:SSD1306_AssignedPin	6
+../Core/Src/ssd1306.c:40:6:SSD1306_Write	2
+../Core/Src/ssd1306.c:58:6:SSD1306_Init	1
+../Core/Src/ssd1306.c:94:6:SSD1306_ScrollRight	1
+../Core/Src/ssd1306.c:105:6:SSD1306_ScrollLeft	1
+../Core/Src/ssd1306.c:116:6:SSD1306_Scrolldiagright	1
+../Core/Src/ssd1306.c:131:6:SSD1306_Scrolldiagleft	1
+../Core/Src/ssd1306.c:146:6:SSD1306_Stopscroll	1
+../Core/Src/ssd1306.c:150:6:SSD1306_InvertDisplay	2
+../Core/Src/ssd1306.c:157:6:SSD1306_DrawBitmap	7
+../Core/Src/ssd1306.c:178:6:SSD1306_UpdateScreen	2
+../Core/Src/ssd1306.c:192:6:SSD1306_ToggleInvert	2
+../Core/Src/ssd1306.c:204:6:SSD1306_Fill	2
+../Core/Src/ssd1306.c:209:6:SSD1306_DrawPixel	5

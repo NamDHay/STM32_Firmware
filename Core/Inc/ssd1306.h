@@ -9,7 +9,12 @@
 #define INC_SSD1306_H_
 
 #include "main.h"
+#include "stdio.h"
+#include "string.h"
 #include "stdint.h"
+#include "stdbool.h"
+
+#define ABS(x)   ((x) > 0 ? (x) : -(x))
 
 #define SSD1306_WIDTH            128
 #define SSD1306_HEIGHT           64
@@ -70,16 +75,25 @@ typedef struct{
 	uint8_t column;
 	SSD1306Pin pin;
 	SSD1306Cmd cmd;
+	uint8_t Inverted;
 //	I2C_HandleTypeDef i2c;
 #if defined(SSD1306_SPI)
 	SPI_HandleTypeDef spi;
 #endif
 }SSD1306;
 
-void SSD1306_AssignedPin(SSD1306 *ssd1306, GPIO_TypeDef *port, uint16_t pin, pinName name);
-void SSD1306_Write(SSD1306 *ssd1306, uint8_t data, size_t lengh, SSD1306Mode mode);
-void SSD1306_Init(SSD1306 *ssd1306);
+void SSD1306_AssignedPin(GPIO_TypeDef *port, uint16_t pin, pinName name);
+void SSD1306_Write(uint8_t data, size_t lengh, SSD1306Mode mode);
+void SSD1306_Init();
 void SSD1306_ScrollRight(uint8_t start_row, uint8_t end_row);
 void SSD1306_ScrollLeft(uint8_t start_row, uint8_t end_row);
-
+void SSD1306_Scrolldiagright(uint8_t start_row, uint8_t end_row);
+void SSD1306_Scrolldiagleft(uint8_t start_row, uint8_t end_row);
+void SSD1306_Stopscroll();
+void SSD1306_InvertDisplay(bool i);
+void SSD1306_DrawBitmap(int16_t x, int16_t y, const unsigned char* bitmap, int16_t w, int16_t h, uint16_t color);
+void SSD1306_UpdateScreen(void);
+void SSD1306_ToggleInvert(void);
+void SSD1306_Fill(SSD1306_COLOR_t color);
+void SSD1306_DrawPixel(uint16_t x, uint16_t y, SSD1306_COLOR_t color);
 #endif /* INC_SSD1306_H_ */
