@@ -1,48 +1,35 @@
 /*
  * flash.h
  *
- *  Created on: Sep 29, 2023
- *      Author: NamDHay
+ *  Created on: Mar 15, 2024
+ *      Author: namdhay
  */
 
-#ifndef INC_FLASH_SAVE_H_
-#define INC_FLASH_SAVE_H_
+#ifndef INC_FLASH_H_
+#define INC_FLASH_H_
 
-#include "string.h"
+#include "main.h"
 #include "stdio.h"
-#include "stdint.h"
+#include "stdlib.h"
+#include "string.h"
 #include "stdbool.h"
 
-#define FLASH_ADDR_BASE		(0x08000000+1024*64)
-#define FLASH_ADDR_PAGE1	(0x08000000+1024*64)
-#define FLASH_ADDR_PAGE2	(0x08000000+1024*63)
+#define FLASH_BASE_ADDR		0X08000000
+#define FLASH_TARGET_PAGE	64
+#define FLASH_TARGET_ADDR	(FLASH_BASE_ADDR + FLASH_TARGET_PAGE * 1024)
 
-typedef struct flashPIDParam{
-	uint8_t ID;
-	float kp;
-	float ki;
-	float kd;
-	float deltaT;
-	float alpha;
-}flashPIDParam;
+#define VALID_FLASH_SPACE	20 		//bytes unit
 
-typedef enum SFlash_State_type{
-	STATE_PAGE_CLONE,
-	STATE_PAGE_MODIFY,
-	STATE_PAGE_ERASED,
-	STATE_PAGE_WRITE,
-}SFlash_State_type;
 
-typedef enum SFlash_StatusTypeDef{
-	SFLASH_OK,
-	SFLASH_BUSY,
-	SFLASH_ERROR,
-	SFLASH_FULL,
-	SFLASH_VALID,
-}SFlash_StatusTypeDef;
+typedef enum {
+	FLASH_CHECK_FREESPACE,
+	FLASH_WRITE,
+	FLASH_CLONE,
+	FLASH_UPDATE,
+}FlashWriteProcedure;
 
-SFlash_StatusTypeDef Flash_Format(uint32_t addr);
-SFlash_StatusTypeDef Flash_Write(uint32_t address, void *data, size_t sizeofDataType);
-SFlash_StatusTypeDef Flash_Read(uint32_t address, void *data, size_t sizeOfDataType);
-SFlash_StatusTypeDef Flash_Update(uint32_t address, void *data, size_t sizeOfDataType);
-#endif /* INC_FLASH_SAVE_H_ */
+HAL_StatusTypeDef flash_Erase(uint32_t addr);
+HAL_StatusTypeDef flash_Write(uint32_t addr, uint16_t *data, size_t lengh);
+HAL_StatusTypeDef flash_Read(uint32_t addr, uint16_t *data, size_t lengh);
+HAL_StatusTypeDef flash_Write2(uint32_t addr, uint16_t *data, size_t lengh);
+#endif /* INC_FLASH_H_ */

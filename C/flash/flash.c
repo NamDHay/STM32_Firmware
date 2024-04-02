@@ -1,166 +1,172 @@
 /*
  * flash.c
  *
- *  Created on: Sep 29, 2023
- *      Author: NamDHay
+ *  Created on: Mar 15, 2024
+ *      Author: namdhay
  */
 
 #include "flash.h"
-#include "main.h"
 
-SFlash_State_type sflashprocc;
-flashPIDParam clone;
+FlashWriteProcedure writeprocedure;
 
-SFlash_StatusTypeDef Flash_Format(uint32_t addr)
-{
+// Temporary flash parameter
+typedef struct FlashTemp_t {
+	uint32_t addr;
+	uint16_t *data;
+	uint8_t lengh;
+}FlashTemp_t;
+
+HAL_StatusTypeDef flash_Erase(uint32_t addr) {
+	//Check for valid input parameter
+	if(!addr)	return HAL_ERROR;
+
+	//Unlock flash
 	HAL_FLASH_Unlock();
-	FLASH_EraseInitTypeDef fe;
-	fe.TypeErase = FLASH_TYPEERASE_PAGES;
-	fe.PageAddress = addr;
-	fe.NbPages = 1;
-	fe.Banks = FLASH_BANK_1;
-	uint32_t pageErr = 0;
-	if(HAL_FLASHEx_Erase(&fe, &pageErr) == HAL_OK){
-		HAL_FLASH_Lock();
-		return SFLASH_OK;
-	}
+
+	//Init erase flash parameter
+	FLASH_EraseInitTypeDef err;
+	err.Banks = 1;
+	err.NbPages = 1;
+	err.PageAddress = addr;
+	err.TypeErase = FLASH_TYPEERASE_PAGES;
+	uint32_t fe;
+
+	//Erase flash
+	HAL_FLASHEx_Erase(&err, &fe);
+
+	//Lock flash
 	HAL_FLASH_Lock();
-	return SFLASH_ERROR;
+	return HAL_OK;
 }
 
-SFlash_StatusTypeDef Flash_Write(uint32_t address, void *data, size_t sizeofDataType){
 
-	static uint8_t lengh = 0;
-	static bool IsBusy = false;
-	static uint32_t addrW = 0;
-	uint16_t *dta = NULL;
-	static uint16_t *pdta = NULL;
-	if(IsBusy)	return SFLASH_BUSY;
-	if(!address)	return SFLASH_ERROR;
-	if(!lengh && !addrW){
-		lengh = sizeofDataType;
-		addrW = address;
-	}
-	if(!pdta){
-		dta = (uint16_t*)data;
-	}else
-		dta = pdta;
+HAL_StatusTypeDef flash_Write(uint32_t addr, uint16_t *data, size_t lengh) {
+	//Check for valid input parameter
+	if(!data || !lengh || !addr)	return HAL_ERROR;
+
 	HAL_FLASH_Unlock();
-	IsBusy = true;
-	if(HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, addrW, *dta) == HAL_OK){
-		IsBusy = false;
-		lengh -= 2;
-		addrW += 2;
-		dta++;
-		pdta = dta;
+
+	static FlashTemp_t wtemp;
+
+	if(!wtemp.addr || !wtemp.lengh || !wtemp.data) {
+		wtemp.addr = addr;
+		wtemp.lengh = lengh;
+		wtemp.data = data;
 	}
-	if(lengh >= 1 && lengh <= sizeofDataType){
+
+	HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, wtemp.addr, (uint64_t)*wtemp.data);
+	wtemp.addr += 2;
+	wtemp.lengh -= 2;
+	wtemp.data++;
+
+	if(wtemp.lengh > 0 && wtemp.lengh <= lengh) {
 		HAL_FLASH_Lock();
-		return SFLASH_BUSY;
-	}else{
-		lengh = 0;
-		addrW = 0;
-		pdta = NULL;
+	}else {
+		wtemp.data = NULL;
+		wtemp.addr = 0;
+		wtemp.lengh = 0;
 		HAL_FLASH_Lock();
-		return SFLASH_OK;
+		return HAL_OK;
 	}
-	return SFLASH_BUSY;
+
+	return HAL_BUSY;
 }
 
-SFlash_StatusTypeDef Flash_Read(uint32_t address, void *data, size_t sizeOfDataType){
-	static uint8_t lengh = 0;
-	static uint32_t addrR = 0;
-	uint16_t *dta = NULL;
-	static uint16_t *pdta = NULL;
-	if(!address)	return SFLASH_ERROR;
-	if(!lengh && !addrR){
-		lengh = sizeOfDataType;
-		addrR = address;
+HAL_StatusTypeDef flash_Read(uint32_t addr, uint16_t *data, size_t lengh) {
+	//Check for valid input parameter
+	if(!data || !lengh || !addr)	return HAL_ERROR;
+
+	static FlashTemp_t rtemp;
+
+	if(!rtemp.addr || !rtemp.lengh || !rtemp.data) {
+		rtemp.addr = addr;
+		rtemp.lengh = lengh;
+		rtemp.data = data;
 	}
-	if(!pdta){
-		dta = (uint16_t*)data;
-	}else
-		dta = pdta;
-	*dta = *(__IO uint16_t*) addrR;
-	lengh -= 2;
-	addrR += 2;
-	dta++;
-	pdta = dta;
-	if(lengh > 0 && lengh <= sizeOfDataType){
-		return SFLASH_BUSY;
-	}else{
-		lengh = 0;
-		addrR = 0;
-		pdta = NULL;
-		return SFLASH_OK;
+
+	*rtemp.data = *(__IO uint16_t  *)(rtemp.addr);
+
+	rtemp.addr += 2;
+	rtemp.lengh -= 2;
+	rtemp.data++;
+
+	if(rtemp.lengh > 0 && rtemp.lengh <= lengh) {
+		__NOP();
+	}else {
+		rtemp.data = NULL;
+		rtemp.addr = 0;
+		rtemp.lengh = 0;
+		return HAL_OK;
 	}
+
+	return HAL_BUSY;
 }
 
-SFlash_StatusTypeDef Flash_Update(uint32_t address, void *data, size_t sizeOfDataType){
-	static uint16_t startmodify = 0;
-	static uint8_t clonelengh = 0;
+static HAL_StatusTypeDef flash_check_freespace(uint32_t addr, size_t lengh) {
+	//Check for valid input parameter
+	if(!lengh || !addr)	return HAL_ERROR;
 
-	if(address < FLASH_ADDR_BASE)	return SFLASH_ERROR;
-	if(!startmodify) startmodify = address - FLASH_ADDR_BASE;
-	if(!clonelengh){
-		clonelengh = sizeOfDataType;
+	static FlashTemp_t ctemp;
+
+	if(!ctemp.addr || !ctemp.lengh) {
+		ctemp.addr = addr;
+		ctemp.lengh = lengh;
 	}
 
-	switch(sflashprocc){
-	case STATE_PAGE_CLONE:
-		while(Flash_Read(FLASH_ADDR_BASE, &clone, sizeof(flashPIDParam)) != SFLASH_OK);
-		sflashprocc = STATE_PAGE_MODIFY;
-		break;
-	case STATE_PAGE_MODIFY:
-
-		memcpy(((uint8_t *)&clone+startmodify),(uint8_t *)data,clonelengh);
-		sflashprocc = STATE_PAGE_ERASED;
-
-		break;
-	case STATE_PAGE_ERASED:
-		Flash_Format(FLASH_ADDR_BASE);
-		sflashprocc = STATE_PAGE_WRITE;
-		break;
-	case STATE_PAGE_WRITE:
-		while(Flash_Write(FLASH_ADDR_BASE, &clone, sizeof(flashPIDParam))!= SFLASH_OK);
-		sflashprocc = STATE_PAGE_CLONE;
-		return SFLASH_OK;
-		break;
+	if(*(__IO uint16_t  *)(ctemp.addr) != 0xFFFF) {
+		return HAL_ERROR;
 	}
-	return SFLASH_BUSY;
+
+	ctemp.addr += 2;
+	ctemp.lengh -= 2;
+
+	if(ctemp.lengh > 0 && ctemp.lengh <= lengh) {
+		__NOP();
+	}else {
+		ctemp.addr = 0;
+		ctemp.lengh = 0;
+		return HAL_OK;
+	}
+
+	return HAL_BUSY;
 }
 
-//SFlash_StatusTypeDef Flash_Update_All(uint32_t address, void *data, size_t sizeOfDataType){
-//	static uint16_t startmodify = 0;
-//	static uint8_t clonelengh = 0;
-//	uint16_t *cpy = NULL;
-//
-//	if(address < FLASH_ADDR_BASE)	return SFLASH_ERROR;
-//	if(!startmodify) startmodify = address - FLASH_ADDR_BASE;
-//	if(!clonelengh){
-//		clonelengh = sizeOfDataType;
-//	}
-//
-//	switch(sflashprocc){
-//		case STATE_PAGE_CLONE:
-//			while(Flash_Read(FLASH_ADDR_BASE, &clone, sizeof(flashPIDParam)) != SFLASH_OK);
-//			sflashprocc = STATE_PAGE_MODIFY;
-//			break;
-//		case STATE_PAGE_MODIFY:
-//
-//			memcpy(((uint8_t *)&clone+startmodify),(uint8_t *)data,clonelengh);
-//			sflashprocc = STATE_PAGE_ERASED;
-//
-//			break;
-//		case STATE_PAGE_ERASED:
-//			Flash_Format(FLASH_ADDR_BASE);
-//			sflashprocc = STATE_PAGE_WRITE;
-//			break;
-//		case STATE_PAGE_WRITE:
-//			while(Flash_Write(FLASH_ADDR_BASE, &clone, sizeof(flashPIDParam))!= SFLASH_OK);
-//			sflashprocc = STATE_PAGE_CLONE;
-//			return SFLASH_OK;
-//			break;
-//		}
-//	return SFLASH_BUSY;
-//}
+HAL_StatusTypeDef flash_Write2(uint32_t addr, uint16_t *data, size_t lengh) {
+	//Check for valid input parameter
+	if(!data || !lengh || !addr)	return HAL_ERROR;
+
+	static uint16_t *temp = NULL;
+
+	switch(writeprocedure) {
+	case FLASH_CHECK_FREESPACE:
+		HAL_StatusTypeDef err = flash_check_freespace(addr, lengh);
+		if(err == HAL_OK) {
+			writeprocedure = FLASH_WRITE;
+		}else if(err == HAL_ERROR) {
+			writeprocedure = FLASH_CLONE;
+			temp = calloc(VALID_FLASH_SPACE / 2,sizeof(uint16_t));
+		}
+		break;
+	case FLASH_WRITE:
+		if(flash_Write(addr, data, lengh) == HAL_OK){
+			writeprocedure = FLASH_CHECK_FREESPACE;
+			return HAL_OK;
+		}
+		break;
+	case FLASH_CLONE:
+		if(flash_Read(FLASH_TARGET_ADDR, temp, VALID_FLASH_SPACE) == HAL_OK) {
+			flash_Erase(FLASH_TARGET_ADDR);
+			writeprocedure = FLASH_UPDATE;
+			return HAL_BUSY;
+		}
+		break;
+	case FLASH_UPDATE:
+		if(flash_Write(FLASH_TARGET_ADDR, temp, VALID_FLASH_SPACE) == HAL_OK) {
+			free(temp);
+			writeprocedure = FLASH_CHECK_FREESPACE;
+			return HAL_OK;
+		}
+		break;
+	}
+	return HAL_BUSY;
+}
